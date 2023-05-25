@@ -35,7 +35,7 @@ public class Application extends RouteBuilder {
     @Override
     public void configure() throws Exception {
         from("timer://foo?period=5000")
-            .setBody().constant("Hello World")
+            .setBody().constant("Hello World Banca Digital Java 11 --> Fuse 7.11.1 --> spring-boot-starter 2.5.13 ")
             .log(">>> ${body}");
     }
 }
