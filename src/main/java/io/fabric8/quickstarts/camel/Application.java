@@ -34,6 +34,19 @@ public class Application extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+    	
+    	rest("/say")
+        .get("/hello").to("direct:hello")
+        .get("/bye").consumes("application/json").to("direct:bye")
+        .post("/bye").to("mock:update");
+
+    from("direct:hello")
+        .transform().constant("Hello World");
+
+    from("direct:bye")
+        .transform().constant("Bye World");
+    
+    
         from("timer://foo?period=5000")
             .setBody().constant("Hello World Banca Digital Java 11 --> Fuse 7.11.1 --> spring-boot-starter 2.5.13 ")
             .log(">>> ${body}");
