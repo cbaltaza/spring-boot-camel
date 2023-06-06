@@ -15,6 +15,11 @@
  */
 package io.fabric8.quickstarts.camel;
 
+import org.apache.camel.component.servlet.CamelHttpTransportServlet;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,31 +29,19 @@ import org.springframework.context.annotation.ImportResource;
  * A spring-boot application that includes a Camel route builder to setup the Camel routes
  */
 @SpringBootApplication
-@ImportResource({"classpath:spring/camel-context.xml"})
-public class Application extends RouteBuilder {
+//@ImportResource({"classpath:spring/camel-context.xml"})
+public class Application {
 
     // must have a main method spring-boot can run
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
-    @Override
-    public void configure() throws Exception {
-    	
-    	rest("/say")
-        .get("/hello").to("direct:hello")
-        .get("/bye").consumes("application/json").to("direct:bye")
-        .post("/bye").to("mock:update");
-
-    from("direct:hello")
-        .transform().constant("Hello World");
-
-    from("direct:bye")
-        .transform().constant("Bye World");
-    
-    
-        from("timer://foo?period=5000")
-            .setBody().constant("Hello World Banca Digital Java 11 --> Fuse 7.11.1 --> spring-boot-starter 2.5.13 ")
-            .log(">>> ${body}");
+    @Bean
+    public ServletRegistrationBean camelServletRegistrationBean() {
+        ServletRegistrationBean registration = new ServletRegistrationBean(new CamelHttpTransportServlet(), "/camel/*");
+        registration.setName("CamelServlet");
+        return registration;
     }
+    
 }
